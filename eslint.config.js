@@ -1,0 +1,112 @@
+import solid from 'eslint-plugin-solid/configs/typescript';
+import * as tsParser from '@typescript-eslint/parser';
+import js from '@eslint/js';
+import globals from 'globals';
+import tseslint, { configs as tsConfigs } from 'typescript-eslint';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
+
+/** @type {import('eslint').Linter.Config[]} */
+export default [
+  js.configs.recommended,
+  ...tseslint.config(tsConfigs.recommended),
+  {
+    files: ['**/*.{js,mjs,cjs,ts,tsx,jsx}'],
+    plugins: {
+      'simple-import-sort': simpleImportSort,
+    },
+    rules: {
+      'simple-import-sort/imports': 'error',
+      'simple-import-sort/exports': 'error',
+    },
+  },
+  {
+    rules: {
+      'no-console': 'warn',
+      'sort-imports': [
+        'error',
+        {
+          ignoreCase: false,
+          ignoreDeclarationSort: false,
+          ignoreMemberSort: false,
+          memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
+          allowSeparatedGroups: true,
+        },
+      ],
+    },
+  },
+  {
+    files: ['**/*.{js,mjs,cjs,ts,tsx,jsx}'],
+    ...solid,
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        project: 'tsconfig.json',
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
+    },
+  },
+  {
+    settings: {
+      'import/parsers': {
+        '@typescript-eslint/parser': ['.ts', '.tsx'],
+      },
+      'import/resolver': {
+        typescript: {
+          // always try to resolve types under `<root>@types` directory even
+          // it doesn't contain any source code, like `@types/unist`
+          alwaysTryTypes: true,
+          // use <root>/path/to/folder/tsconfig.json
+          project: 'tsconfig.json',
+        },
+        node: true,
+      },
+    },
+  },
+  {
+    ignores: [
+      '**/*.log',
+      '**/.DS_Store',
+      '**/.vscode/settings.json',
+      '**/.history',
+      '**/.yarn',
+      '**/bazel-*',
+      '**/bazel-bin',
+      '**/bazel-out',
+      '**/bazel-qwik',
+      '**/bazel-testlogs',
+      '**/dist',
+      '**/dist-dev',
+      '**/lib',
+      '**/lib-types',
+      '**/etc',
+      '**/external',
+      '**/node_modules',
+      '**/temp',
+      '**/tsc-out',
+      '**/tsdoc-metadata.json',
+      '**/target',
+      '**/output',
+      '**/rollup.config.js',
+      '**/build',
+      '**/.cache',
+      '**/.vscode',
+      '**/.rollup.cache',
+      '**/dist',
+      '**/tsconfig.tsbuildinfo',
+      '**/vite.config.ts',
+      '**/*.spec.tsx',
+      '**/*.spec.ts',
+      '**/.netlify',
+      '**/pnpm-lock.yaml',
+      '**/package-lock.json',
+      '**/yarn.lock',
+      '**/server',
+      '**/postcss.config.js',
+      '**/prettier.config.js',
+      '**/tailwind.config.js',
+    ],
+  },
+];
