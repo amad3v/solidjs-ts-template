@@ -4,6 +4,7 @@ import js from '@eslint/js';
 import globals from 'globals';
 import tseslint, { configs as tsConfigs } from 'typescript-eslint';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
+import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript';
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
@@ -22,16 +23,6 @@ export default [
   {
     rules: {
       'no-console': 'warn',
-      'sort-imports': [
-        'error',
-        {
-          ignoreCase: false,
-          ignoreDeclarationSort: false,
-          ignoreMemberSort: false,
-          memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
-          allowSeparatedGroups: true,
-        },
-      ],
     },
   },
   {
@@ -53,16 +44,12 @@ export default [
       'import/parsers': {
         '@typescript-eslint/parser': ['.ts', '.tsx'],
       },
-      'import/resolver': {
-        typescript: {
-          // always try to resolve types under `<root>@types` directory even
-          // it doesn't contain any source code, like `@types/unist`
+      'import/resolver-next': [
+        createTypeScriptImportResolver({
           alwaysTryTypes: true,
-          // use <root>/path/to/folder/tsconfig.json
           project: 'tsconfig.json',
-        },
-        node: true,
-      },
+        }),
+      ],
     },
   },
   {
@@ -105,6 +92,7 @@ export default [
       '**/yarn.lock',
       '**/server',
       '**/postcss.config.js',
+      'tsconfig.json',
       '**/prettier.config.js',
       '**/tailwind.config.js',
     ],
